@@ -4,7 +4,7 @@ from sys import stdout
 import time
 from collections import defaultdict
 from posting import make_inter_posting
-from merge_sort import merge_sort_write
+from write_interim import write_interim
 #=======================================================================	
 def read_data():
 	try:	
@@ -12,7 +12,11 @@ def read_data():
 		file_path = "nz2_merged/"
 		page_id = 0
 		start_time = time.time()
-		n = 10
+		n = 3
+		
+		doc_id_url = open("doc_ids.txt", "w+")
+		
+		#interim_index = defaultdict(list)
 		for i in range(0,n):
 			interim_index = defaultdict(list)
 			length = 0
@@ -27,7 +31,7 @@ def read_data():
 			gz_file_content = gzip.open(file_path + str(i) + "_data", 'rb')
 			content = gz_file_content.read()
 			gz_file_content.close()
-			 
+			
 			while end < len(content) and doc_counter < len(index):
 				start = end
 				page_details = index[doc_counter].split()
@@ -46,17 +50,25 @@ def read_data():
 				try:
 					page = content[start:end]
 					pg = page
+					
 					tokenized_str = parser.parser(url, page, pg, length+1, length+1)[1]
+					
+					#doc_id_url.write(str(page_id)+" : "+str(url)+"\n")
+					
 					interim_index = make_inter_posting(interim_index, tokenized_str, page_id)
+					
 					current_time = time.time()
-					stdout.write("\rPages Parsed : %i | Files Read : %i | Time Elapsed : %i secs" % (page_id, i, (current_time - start_time)))
+					stdout.write("\rPages Parsed : %i | Files Read : %i | Time Elapsed : %i secs" % (page_id, (i+1), (current_time - start_time)))
 					stdout.flush()
 				except TypeError as te:
 					pass
 					
-			merge_sort_write(interim_index, i)
+			write_interim(interim_index, i)
+		
+		doc_id_url.close()
 	except Exception as e:
 		print "Error in Reading Data : " + str(e)
+		doc_id_url.close()
 		gz_file_index.close()
 		gz_file_content.close()
 #=======================================================================				
