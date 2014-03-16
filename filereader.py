@@ -2,6 +2,7 @@ import gzip
 import parser
 from sys import stdout
 import time
+from merge import merge
 from collections import defaultdict
 from posting import make_inter_posting
 from write_interim import write_interim
@@ -12,7 +13,7 @@ def read_data():
 		file_path = "nz2_merged/"
 		page_id = 0
 		start_time = time.time()
-		n = 3
+		n = 10
 		
 		doc_id_url = open("doc_ids.txt", "w+")
 		
@@ -64,7 +65,7 @@ def read_data():
 					pass
 					
 			write_interim(interim_index, i)
-		
+			merge(i)
 		doc_id_url.close()
 	except Exception as e:
 		print "Error in Reading Data : " + str(e)
