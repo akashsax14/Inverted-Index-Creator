@@ -1,3 +1,7 @@
+/*
+This parser is not authored by me. It has been created and written by "Xiaohui Long".
+I have only used it for parsing web pages in my code
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
